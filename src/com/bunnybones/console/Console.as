@@ -23,12 +23,14 @@ package com.bunnybones.console
 		private var textLines:Vector.<String> = new Vector.<String>;
 		private var lines:Vector.<TextField> = new Vector.<TextField>;
 		private var rootObject:Object;
+		static private var _singleton:Console;
 		public function Console(rootObject:Object) 
 		{
 			this.rootObject = rootObject;
 			textFormat = new TextFormat(null, 12, 0xffffff);
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
+			_singleton = this;
 		}
 		
 		private function init(e:Event = null):void 
@@ -37,9 +39,11 @@ package com.bunnybones.console
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			stage.addEventListener(Event.RESIZE, onResizeStage);
 			linesToDisplay = 10;
+			//var result:Task = Task.parse("hello(\"one\", hello(\"wonderful\", hello()))") as Task;
+			//tag(result.execute(rootObject));
 			
-			var result:Task = Task.parse("hello(\"one\", hello(\"wonderful\", hello()))") as Task;
-			tag(result.execute(rootObject));
+			//tag("!");
+			//tag("!");
 		}
 		
 		private function onMouseDownConsole(e:MouseEvent):void 
@@ -126,6 +130,16 @@ package com.bunnybones.console
 				if (i-1 < textLines.length) line.text = textLines[i - 1];
 				else return;
 			}
+		}
+		
+		public function print(...rest):void
+		{
+			addLine(String(rest));
+		}
+		
+		static public function get singleton():Console 
+		{
+			return _singleton;
 		}
 		
 	}
