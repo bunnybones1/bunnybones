@@ -1,5 +1,7 @@
-package com.bunnybones.perlin 
+package com.bunnybones.perlin.examples 
 {
+	import com.bunnybones.perlin.Simplex;
+	import com.bunnybones.display.MainSprite;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
@@ -11,8 +13,9 @@ package com.bunnybones.perlin
 	 * ...
 	 * @author Tomasz Dysinski
 	 */
-	public class SimplexTest extends Sprite 
+	public class SimplexTestMain extends MainSprite 
 	{
+		
 		static public const WIDTH:int = 64;
 		static public const HEIGHT:int = 48;
 		
@@ -20,9 +23,13 @@ package com.bunnybones.perlin
 		private var mapData:BitmapData;
 		private var map:Bitmap;
 		private var zDepth:Number = 0;
-		
-		public function SimplexTest() 
+		public function SimplexTestMain() 
 		{
+			super();
+		}
+		override protected function init():void 
+		{
+			super.init();
 			Simplex.init();
 			matrix = new Matrix3D();
 			//matrix.appendScale(.05, .05, .05);
@@ -46,6 +53,7 @@ package com.bunnybones.perlin
 			map.bitmapData = mapData;
 			//trace("hi");
 		}
+		
 	}
 
 }
