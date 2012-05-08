@@ -27,6 +27,18 @@ package com.bunnybones.geom
 			return matrix;
 		}
 		
+		static public function getMatrixUp(fromParent:DisplayObject, toChild:DisplayObject):Matrix
+		{
+			var matrices:Vector.<Matrix> = getMatrixStack(toChild, fromParent);
+			//Console.singleton.print("up", matrices.length);
+			var matrix:Matrix = new Matrix();
+			for (var i:int = matrices.length - 1; i >= 0; i--) 
+			{
+				matrix.concat(matrices[i]);	
+			}
+			return matrix;
+		}
+		
 		static private function getMatrixStack(fromChild:DisplayObject, toParent:DisplayObject):Vector.<Matrix>
 		{
 			var matrices:Vector.<Matrix> = new Vector.<Matrix>;
@@ -41,17 +53,6 @@ package com.bunnybones.geom
 			return null;
 		}
 		
-		static public function getMatrixUp(fromParent:DisplayObject, toChild:DisplayObject):Matrix
-		{
-			var matrices:Vector.<Matrix> = getMatrixStack(toChild, fromParent);
-			//Console.singleton.print("up", matrices.length);
-			var matrix:Matrix = new Matrix();
-			for (var i:int = matrices.length - 1; i >= 0; i--) 
-			{
-				matrix.concat(matrices[i]);	
-			}
-			return matrix;
-		}
 	}
 
 }

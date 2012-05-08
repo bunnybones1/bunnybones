@@ -1,7 +1,5 @@
 package com.bunnybones.console 
 {
-	import com.bunnybones.tag;
-	import mx.core.IFlexAsset;
 	/**
 	 * ...
 	 * @author Tomasz Dysinski
@@ -38,7 +36,7 @@ package com.bunnybones.console
 			if (!object) object = detectObject(input);
 			if (!object) object = detectNumber(input);
 			if (!object) object = detectString(input);
-			tag(input, "became", object);
+			dtrace(input, "became", object);
 			return object
 		}
 		
@@ -67,7 +65,7 @@ package com.bunnybones.console
 		
 		static public function detectTask(input:String):Task
 		{
-			tag(input);
+			dtrace(input);
 			var index:int = 0;
 			var mode:String;
 			var indexIn:int;
@@ -127,7 +125,7 @@ package com.bunnybones.console
 							case ",":
 								if (!mode)
 								{
-									tag("!");
+									dtrace("!");
 									args.push(parse(trim(argsString.substring(indexIn, index))));
 									indexIn = index + 1;
 								}
@@ -160,11 +158,11 @@ package com.bunnybones.console
 						index++;
 					}
 					args.push(parse(trim(argsString.substring(indexIn, index))));
-					tag(methodName);
-					tag(argsString);
+					dtrace(methodName);
+					dtrace(argsString);
 					for each (var arg:String in args) 
 					{
-						tag(arg);
+						dtrace(arg);
 					}
 				}
 				return new Task(methodName, args);

@@ -8,7 +8,6 @@ package com.bunnybones.console
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
-	import com.bunnybones.tag;
 	
 	/**
 	 * ...
@@ -27,23 +26,28 @@ package com.bunnybones.console
 		public function Console(rootObject:Object) 
 		{
 			this.rootObject = rootObject;
-			textFormat = new TextFormat(null, 12, 0xffffff);
+			textFormat = new TextFormat("courier new", 10, 0xffffff);
+			_singleton = this;
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
-			_singleton = this;
 		}
 		
 		private function init(e:Event = null):void 
 		{
-			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownConsole);
 			removeEventListener(Event.ADDED_TO_STAGE, init);
+			parent.addEventListener(Event.ADDED, onAdded);
+			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownConsole);
 			stage.addEventListener(Event.RESIZE, onResizeStage);
 			linesToDisplay = 10;
 			//var result:Task = Task.parse("hello(\"one\", hello(\"wonderful\", hello()))") as Task;
 			//tag(result.execute(rootObject));
 			
-			//tag("!");
-			//tag("!");
+			dtrace("Console initialized");
+		}
+		
+		private function onAdded(e:Event):void 
+		{
+			parent.addChild(this);
 		}
 		
 		private function onMouseDownConsole(e:MouseEvent):void 
@@ -115,8 +119,8 @@ package com.bunnybones.console
 		private function parseInput(input:String):void 
 		{
 			var something:Object = Task.parse(input);
-			if (something is Task) tag((something as Task).execute(rootObject));
-			if (something is ObjectReference) tag((something as ObjectReference).resolve(rootObject));
+			if (something is Task) dtrace((something as Task).execute(rootObject));
+			if (something is ObjectReference) dtrace((something as ObjectReference).resolve(rootObject));
 		}
 		
 		public function addLine(str:String):void

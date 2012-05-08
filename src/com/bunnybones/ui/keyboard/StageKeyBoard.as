@@ -21,7 +21,8 @@ package com.bunnybones.ui.keyboard
 		
 		static public function bind(stage:Stage):void
 		{
-			trace("StageKeyBoard bound to stage.");
+			//dtrace("StageKeyBoard bound to stage.");
+			staticInit();
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			stage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -37,7 +38,7 @@ package com.bunnybones.ui.keyboard
 					{
 						if (keyBinding.ctrl == keyStates[Keyboard.CONTROL] && keyBinding.shift == keyStates[Keyboard.SHIFT] && keyBinding.alt == keyStates[Keyboard.ALTERNATE])
 						{
-							keyBinding.callback();
+							keyBinding.callbackOnDown();
 						}
 					}
 				}
@@ -47,15 +48,22 @@ package com.bunnybones.ui.keyboard
 		static private function onKeyUp(e:KeyboardEvent):void 
 		{
 			keyStates[e.keyCode] = false;
+			var keyCodeBindings:Array = keyBindings[e.keyCode];
+			for each(var keyBinding:KeyBinding in keyCodeBindings)
+			{
+				keyBinding.testKeyUp(e);
+			}
 		}
 		
 		static private function onKeyDown(e:KeyboardEvent):void 
 		{
+			//var firstDown:Boolean = !keyStates[e.keyCode];
 			keyStates[e.keyCode] = true;
 			var keyCodeBindings:Array = keyBindings[e.keyCode];
 			for each(var keyBinding:KeyBinding in keyCodeBindings)
 			{
-				keyBinding.testKey(e);
+				//if(!keyBinding.instantRepeat && firstDown) keyBinding.testKeyDown(e);
+				if(!keyBinding.instantRepeat) keyBinding.testKeyDown(e);
 			}
 		}
 		
@@ -73,10 +81,10 @@ package com.bunnybones.ui.keyboard
 			return true;
 		}
 		
-		static public function bindKey(callback:Function, keyCode:uint, ctrl:Boolean = false, shift:Boolean = false, alt:Boolean = false, instantRepeat:Boolean = false):void 
+		static public function bindKey(keyCode:uint, callbackOnDown:Function = null, callbackOnUp:Function = null, ctrl:Boolean = false, shift:Boolean = false, alt:Boolean = false, instantRepeat:Boolean = false):void 
 		{
 			staticInit();
-			var keyBinding:KeyBinding = new KeyBinding(callback, keyCode, ctrl, shift, alt, instantRepeat);
+			var keyBinding:KeyBinding = new KeyBinding(keyCode, callbackOnDown, callbackOnUp, ctrl, shift, alt, instantRepeat);
 			var keyCodeBindings:Array = keyBindings[keyCode];
 			keyCodeBindings.push(keyBinding);
 			unsortedKeyBindings.push(keyBinding);
@@ -97,7 +105,7 @@ package com.bunnybones.ui.keyboard
 		{
 			if (staticInitd) return;
 			staticInitd = true;
-			trace("Tool: StageKeyBoard Initd");
+			//dtrace("Tool: StageKeyBoard Initd");
 			for (var i:int = 0; i <= 255; i++)
 			{
 				keyStates[i] = false;
