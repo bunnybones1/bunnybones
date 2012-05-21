@@ -141,6 +141,11 @@ package com.bunnybones.console
 			addLine(String(rest));
 		}
 		
+		public function toggle():void 
+		{
+			visible = !visible;
+		}
+		
 		static public function get singleton():Console 
 		{
 			return _singleton;
