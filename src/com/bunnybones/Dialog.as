@@ -36,7 +36,7 @@ package com.bunnybones
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-			stage.addEventListener(Event.RESIZE, onResize, false, 0, true);
+			stage.addEventListener(Event.RESIZE, onResize);
 			StageKeyBoard.bind(stage);
 			StageKeyBoard.bindKey(Keyboard.ESCAPE, onKeyDownEscape);
 			StageKeyBoard.bindKey(Keyboard.ENTER, onKeyDownEnter);
@@ -71,6 +71,7 @@ package com.bunnybones
 		
 		protected function deinit():void 
 		{
+			stage.removeEventListener(Event.RESIZE, onResize);
 			stage.focus = stage;
 			parent.removeChild(this);
 		}
