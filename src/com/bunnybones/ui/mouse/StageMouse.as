@@ -15,6 +15,7 @@ package com.bunnybones.ui.mouse
 		static public var stagePosAtLastUp:Point = new Point();
 		static private var movesSinceLastFrame:Vector.<MouseEvent> = new Vector.<MouseEvent>();
 		static public var moveSinceLastFrame:Point = new Point();
+		static private var _isMouseDown:Boolean;
 		
 		public function StageMouse() 
 		{
@@ -53,14 +54,21 @@ package com.bunnybones.ui.mouse
 			
 		static private function onMouseDown(e:MouseEvent):void 
 		{
+			_isMouseDown = true;
 			stagePosAtLastDown.x = e.stageX;
 			stagePosAtLastDown.y = e.stageY;
 		}
 		
 		static private function onMouseUp(e:MouseEvent):void 
 		{
+			_isMouseDown = false;
 			stagePosAtLastUp.x = e.stageX;
 			stagePosAtLastUp.y = e.stageY;
+		}
+		
+		static public function get isMouseDown():Boolean 
+		{
+			return _isMouseDown;
 		}
 		
 	}
