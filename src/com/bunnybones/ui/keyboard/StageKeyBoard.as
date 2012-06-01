@@ -97,7 +97,7 @@ package com.bunnybones.ui.keyboard
 			{
 				var toRemove:Array;
 				if ((keyCodeBindings[i] as KeyBinding).matches(callback, keyCode, ctrl, shift, alt)) toRemove = keyCodeBindings.splice(i, 1);
-				unsortedKeyBindings.splice(unsortedKeyBindings.indexOf(toRemove[0]), 1);
+				if(toRemove) unsortedKeyBindings.splice(unsortedKeyBindings.indexOf(toRemove[0]), 1);
 			}
 		}
 		
