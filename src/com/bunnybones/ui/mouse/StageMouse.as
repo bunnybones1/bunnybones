@@ -14,6 +14,7 @@ package com.bunnybones.ui.mouse
 		static public var stagePosAtLastDown:Point = new Point();
 		static public var stagePosAtLastUp:Point = new Point();
 		static private var movesSinceLastFrame:Vector.<MouseEvent> = new Vector.<MouseEvent>();
+		static private var stage:Stage;
 		static public var moveSinceLastFrame:Point = new Point();
 		
 		public function StageMouse() 
@@ -23,11 +24,17 @@ package com.bunnybones.ui.mouse
 		
 		static public function bind(stage:Stage):void 
 		{
+			StageMouse.stage = stage;
 			dtrace("StageMouse bound to stage.");
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			stage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+		}
+		
+		static public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void
+		{
+			stage.addEventListener(type, listener, useCapture, priority, useWeakReference);
 		}
 		
 		static private function onMouseMove(e:MouseEvent):void 
