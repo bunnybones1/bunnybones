@@ -10,9 +10,11 @@ package com.bunnybones.color
 		private var _g:int;
 		private var _b:int;
 		private var _a:int;
+		private var safe:Boolean;
 		
-		public function Color(hex:uint, useAlpha:Boolean = false) 
+		public function Color(hex:uint, useAlpha:Boolean = false, safe:Boolean = true) 
 		{
+			this.safe = safe;
 			_a = useAlpha ? (hex >> 24) & 0xFF : 255;
 			_r = (hex >> 16) & 0xFF;
 			_g = (hex >> 8) & 0xFF;
@@ -29,7 +31,7 @@ package com.bunnybones.color
 		
 		public function clone():Color 
 		{
-			return new Color(hexARGB, true);
+			return new Color(hexARGB, true, safe);
 		}
 		
 		public function blend(other:Color, amt:Number, useOtherAlpha:Boolean = false):Color 
@@ -61,19 +63,23 @@ package com.bunnybones.color
 		
 		public function set a(value:int):void 
 		{
-			_a = Math.max(0, Math.min(255, value));
+			if(safe) _a = Math.max(0, Math.min(255, value));
+			else _a = value;
 		}
 		public function set r(value:int):void
 		{
-			_r = Math.max(0, Math.min(255, value));
+			if(safe) _r = Math.max(0, Math.min(255, value));
+			else _r = value;
 		}
 		public function set g(value:int):void
 		{
-			_g = Math.max(0, Math.min(255, value));
+			if(safe) _g = Math.max(0, Math.min(255, value));
+			else _g = value;
 		}
 		public function set b(value:int):void
 		{
-			_b = Math.max(0, Math.min(255, value));
+			if(safe) _b = Math.max(0, Math.min(255, value));
+			else _b = value;
 		}
 		
 		public function get hexARGB():uint
