@@ -71,6 +71,7 @@ package com.bunnybones
 		
 		protected function deinit():void 
 		{
+			if (!stage) throw new Error("this must be a child of the stage to function properly. Suggestion: add it to any active display object upon creation.");
 			stage.removeEventListener(Event.RESIZE, onResize);
 			stage.focus = stage;
 			parent.removeChild(this);
