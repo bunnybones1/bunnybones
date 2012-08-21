@@ -9,8 +9,10 @@ package com.bunnybones
 	 */
 	public class DialogFileName extends Dialog 
 	{
+		static public const SAVE:String = "save";
+		static public const OPEN:String = "open";
 		
-		public function DialogFileName(path:String = "") 
+		public function DialogFileName(type:String = OPEN, path:String = "", description:String = "open particle field file") 
 		{
 			super("use dialogBox");
 			text.editable = false;
@@ -19,8 +21,17 @@ package com.bunnybones
 			file = file.resolvePath(path);
 			file.addEventListener(Event.SELECT, onSelect);
 			file.addEventListener(Event.CANCEL, onCancel);
-			file.browseForOpen("open particle field file");
-			
+			switch (type) 
+			{
+				case SAVE:
+					file.browseForSave(description);
+				break;
+				case OPEN:
+					file.browseForOpen(description);
+				break;
+				default:
+					throw new Error(type + "is not a valid type of file dialog");
+			}
 		}
 		
 		private function onCancel(e:Event):void 
@@ -32,7 +43,12 @@ package com.bunnybones
 		private function onSelect(e:Event):void 
 		{
 			var file:File = e.target as File;
-			var path:String = file.nativePath.substring(File.applicationDirectory.nativePath.length + 1, file.nativePath.length);
+			var appPath:String = File.applicationDirectory.nativePath;
+			var path:String;
+			if (file.nativePath.indexOf(appPath) != -1)
+				path = file.nativePath.substring(appPath.length + 1, file.nativePath.length);
+			else
+				path = file.nativePath;
 			path = StringUtils.replaceAll(path, "\\", "/");
 			text.text = path;
 			//text.text = File.applicationDirectory.nativePath;

@@ -21,7 +21,7 @@ package com.bunnybones.ui.keyboard
 		
 		static public function bind(stage:Stage):void
 		{
-			//dtrace("StageKeyBoard bound to stage.");
+			dtrace("StageKeyBoard bound to stage.");
 			staticInit();
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
@@ -47,6 +47,7 @@ package com.bunnybones.ui.keyboard
 		
 		static private function onKeyUp(e:KeyboardEvent):void 
 		{
+			if (e.keyCode > 255) return;
 			keyStates[e.keyCode] = false;
 			var keyCodeBindings:Array = keyBindings[e.keyCode];
 			for each(var keyBinding:KeyBinding in keyCodeBindings)
@@ -57,6 +58,7 @@ package com.bunnybones.ui.keyboard
 		
 		static private function onKeyDown(e:KeyboardEvent):void 
 		{
+			if (e.keyCode > 255) return;
 			//var firstDown:Boolean = !keyStates[e.keyCode];
 			keyStates[e.keyCode] = true;
 			var keyCodeBindings:Array = keyBindings[e.keyCode];

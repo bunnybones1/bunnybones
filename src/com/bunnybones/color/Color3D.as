@@ -18,11 +18,13 @@ package com.bunnybones.color
 		static private var valueMatrixInv:Matrix3D;
 		private var colorVector:Vector3D;
 		private var colorCache:Color;
+		private var safe:Boolean;
 		
-		public function Color3D(hex:uint, useAlpha:Boolean = false) 
+		public function Color3D(hex:uint, useAlpha:Boolean = false, safe:Boolean = true) 
 		{
+			this.safe = safe;
 			staticInit();
-			colorCache = new Color(hex, useAlpha);
+			colorCache = new Color(hex, useAlpha, safe);
 			colorVector = new Vector3D(colorCache.r, colorCache.g, colorCache.b);
 			colorVector.x = colorCache.r;
 			colorVector.y = colorCache.g;
@@ -108,9 +110,18 @@ package com.bunnybones.color
 		
 		private function updateCacheFromVector():void 
 		{
-			colorCache.r = Math.max(Math.min(colorVector.x, 255), 0);
-			colorCache.g = Math.max(Math.min(colorVector.y, 255), 0);
-			colorCache.b = Math.max(Math.min(colorVector.z, 255), 0);
+			if (safe)
+			{
+				colorCache.r = Math.max(Math.min(colorVector.x, 255), 0);
+				colorCache.g = Math.max(Math.min(colorVector.y, 255), 0);
+				colorCache.b = Math.max(Math.min(colorVector.z, 255), 0);
+			}
+			else
+			{
+				colorCache.r = colorVector.x;
+				colorCache.g = colorVector.y;
+				colorCache.b = colorVector.z;
+			}
 			//dtrace(colorCache);
 		}
 		
@@ -134,7 +145,8 @@ package com.bunnybones.color
 		public function set r(value:int):void 
 		{
 			colorVector.x = value;
-			colorCache.r = Math.max(Math.min(colorVector.x, 255), 0);
+			if(safe) colorCache.r = Math.max(Math.min(colorVector.x, 255), 0);
+			else colorCache.r = colorVector.x;
 		}
 		
 		
@@ -146,7 +158,8 @@ package com.bunnybones.color
 		public function set g(value:int):void 
 		{
 			colorVector.y = value;
-			colorCache.g = Math.max(Math.min(colorVector.y, 255), 0);
+			if (safe) colorCache.g = Math.max(Math.min(colorVector.y, 255), 0);
+			else colorCache.g = colorVector.y;
 		}
 		
 		
@@ -158,7 +171,8 @@ package com.bunnybones.color
 		public function set b(value:int):void 
 		{
 			colorVector.z = value;
-			colorCache.b = Math.max(Math.min(colorVector.z, 255), 0);
+			if(safe) colorCache.b = Math.max(Math.min(colorVector.z, 255), 0);
+			else colorCache.b = colorVector.z;
 		}
 		
 		
