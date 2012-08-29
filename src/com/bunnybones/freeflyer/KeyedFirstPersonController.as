@@ -1,5 +1,6 @@
 package com.bunnybones.freeflyer 
 {
+	import away3d.core.math.MathConsts;
 	import away3d.cameras.Camera3D;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.controllers.FirstPersonController;
@@ -33,10 +34,24 @@ package com.bunnybones.freeflyer
 		
 		private function onEnterFrame(e:Event):void 
 		{
-			panAngle += StageMouse.moveSinceLastFrame.x * MOUSE_SPEED;
-			tiltAngle += StageMouse.moveSinceLastFrame.y * MOUSE_SPEED;
+			_targetObject.yaw(StageMouse.moveSinceLastFrame.x * MOUSE_SPEED);
+			_targetObject.pitch(StageMouse.moveSinceLastFrame.y * MOUSE_SPEED);
+			
 		}
 		
+		override public function update():void 
+		{
+			if (_walkIncrement) {
+				_targetObject.moveForward(_walkIncrement);
+				_walkIncrement = 0;
+			}
+			
+			if (_strafeIncrement) {
+				targetObject.moveRight(_strafeIncrement);
+				_strafeIncrement = 0;
+			}
+			
+		}
 	}
 
 }
