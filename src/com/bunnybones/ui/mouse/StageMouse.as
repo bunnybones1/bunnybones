@@ -57,23 +57,41 @@ package com.bunnybones.ui.mouse
 			movesSinceLastFrame.push(e);
 			if (mouseActive)
 			{
-				lastStagePos.x = stagePos.x;
-				lastStagePos.y = stagePos.y;
-				stagePos.x = e.stageX;
-				stagePos.y = e.stageY;
+				if (stage.mouseLock)
+				{
+					
+				}
+				else
+				{
+					lastStagePos.x = stagePos.x;
+					lastStagePos.y = stagePos.y;
+					stagePos.x = e.stageX;
+					stagePos.y = e.stageY;
+				}
 			}
 			mouseActive = true;
 		}
 		
 		static private function onEnterFrame(e:Event):void 
 		{
+			var i:int;
 			moveSinceLastFrame.x = 0;
 			moveSinceLastFrame.y = 0;
-			
-			for (var i:int = 1; i < movesSinceLastFrame.length; i++) 
+			if (stage.mouseLock)
 			{
-				moveSinceLastFrame.x += movesSinceLastFrame[i].stageX - movesSinceLastFrame[i-1].stageX;
-				moveSinceLastFrame.y += movesSinceLastFrame[i].stageY - movesSinceLastFrame[i-1].stageY;
+				for (i = 1; i < movesSinceLastFrame.length; i++) 
+				{
+					moveSinceLastFrame.x += movesSinceLastFrame[i].movementX;
+					moveSinceLastFrame.y += movesSinceLastFrame[i].movementY;
+				}
+			}
+			else
+			{
+				for (i = 1; i < movesSinceLastFrame.length; i++) 
+				{
+					moveSinceLastFrame.x += movesSinceLastFrame[i].stageX - movesSinceLastFrame[i-1].stageX;
+					moveSinceLastFrame.y += movesSinceLastFrame[i].stageY - movesSinceLastFrame[i-1].stageY;
+				}
 			}
 			
 			while (movesSinceLastFrame.length > 1) movesSinceLastFrame.shift();
