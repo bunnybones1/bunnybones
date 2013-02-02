@@ -57,11 +57,22 @@ package com.bunnybones
 			init();
 		}
 		
-		protected function init():void 
+		protected function init():void
+		{
+			configure();
+			start();
+		}
+		
+		protected function configure():void
+		{
+			
+		}
+		
+		protected function start():void 
 		{
 			StageKeyBoard.bind(stage);
 			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
+			//stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			StageKeyBoard.bindKey(Keyboard.EQUAL, zoomInStep, null, true, false, false, true);
@@ -78,12 +89,12 @@ package com.bunnybones
 			}
 		}
 		
-		private function zoomOutStep():void 
+		protected function zoomOutStep():void 
 		{
 			stage.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_WHEEL, false, false, lastMouseDownPositionLocal.x, lastMouseDownPositionLocal.y, null, false, false, false, false, -1));
 		}
 		
-		private function zoomInStep():void 
+		protected function zoomInStep():void 
 		{
 			stage.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_WHEEL, false, false, lastMouseDownPositionLocal.x, lastMouseDownPositionLocal.y, null, false, false, false, false, 1));
 		}
@@ -129,7 +140,7 @@ package com.bunnybones
 			var inverseMatrix:Matrix = transform.matrix.clone();
 			inverseMatrix.invert();
 			_lastMouseDownPositionLocal = inverseMatrix.transformPoint(lastMouseDownPosition);
-			if ((e.target is Stage && !e.ctrlKey) || StageKeyBoard.isDown(Keyboard.SPACE))
+			if ((e.target is Stage && !(e.ctrlKey || e.shiftKey)) || StageKeyBoard.isDown(Keyboard.SPACE))
 			{
 				stage.addEventListener(MouseEvent.MOUSE_MOVE, onNavigationDrag);
 				stage.addEventListener(MouseEvent.MOUSE_UP, onNavigationStop);
@@ -138,7 +149,7 @@ package com.bunnybones
 		
 		private function onMouseWheel(e:MouseEvent):void 
 		{
-			if (e.ctrlKey && useMode3D)
+			if ((e.ctrlKey || e.shiftKey) && useMode3D)
 			{
 			}
 			else
