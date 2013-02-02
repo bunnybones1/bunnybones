@@ -34,6 +34,7 @@ package com.bunnybones.away3d.pano.tools
 		
 		static private function enableColorPicking():void 
 		{
+			if (!Brush.layer) return;
 			if (active) return;
 			active = true;
 			Brush.active = false;
@@ -42,6 +43,7 @@ package com.bunnybones.away3d.pano.tools
 		
 		static private function disableColorPicking():void 
 		{
+			if (!Brush.layer) return;
 			active = false;
 			Brush.active = true;
 			Brush.layer.removeEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDownLayer);

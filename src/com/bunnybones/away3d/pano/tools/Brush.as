@@ -28,7 +28,7 @@ package com.bunnybones.away3d.pano.tools
 		static private var lastUV:Point = new Point();
 		static private var cursor:Mesh;
 		static private var _brushSize:Number = 1;
-		static public var pressure:Number = 0;
+		static private var _pressure:Number = 1;
 		static public var active:Boolean = true;
 		static private var _brushColor:Color3D = new Color3D(0x456789);
 		static private var brushAlpha:Number = .1;
@@ -74,7 +74,7 @@ package com.bunnybones.away3d.pano.tools
 			cursorShape.graphics.beginFill(0xff0000);
 			cursorShape.graphics.drawCircle(0, 0, 32);
 			cursorShape.graphics.endFill();
-			var cursorBitmapData:BitmapData = new BitmapData(128, 128, true, 0xff000000);
+			var cursorBitmapData:BitmapData = new BitmapData(128, 128, true, 0xffffffff);
 			var m:Matrix = new Matrix();
 			m.translate(64, 64);
 			cursorBitmapData.draw(cursorShape, m);
@@ -84,7 +84,7 @@ package com.bunnybones.away3d.pano.tools
 			//cursorMaterial.alphaBlending = true;
 			var cursorSphere:SphereGeometry = new SphereGeometry(10);
 			cursor = new Mesh(cursorSphere, cursorMaterial);
-			cursor.visible = false;
+			//cursor.visible = false;
 			scene.addChild(cursor);
 		}
 		
@@ -167,20 +167,21 @@ package com.bunnybones.away3d.pano.tools
 				Brush.layer.mouseEnabled = false;
 				Brush.layer.removeEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDownSphere);
 				Brush.layer.removeEventListener(MouseEvent3D.MOUSE_MOVE, onMouseMoveCursor);
-				cursor.visible = false;
+				//cursor.visible = false;
 			}
 			Brush.layer = layer;
+			layer.scene.addChild(cursor);
 			Brush.layer.mouseEnabled = true;
 			Brush.layer.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDownSphere);
 			Brush.layer.addEventListener(MouseEvent3D.MOUSE_MOVE, onMouseMoveCursor);
-			cursor.visible = true
+			//cursor.visible = true
 			cursor.scaleX = cursor.scaleY = cursor.scaleZ = Brush.layer.scaleX * _brushSize;
-			trace("cursor", cursor.scaleX, layer.scaleX);
+			//trace("cursor", cursor.scaleX, layer.scaleX);
 		}
 		
 		static private function onMouseMoveCursor(e:MouseEvent3D):void 
 		{
-			cursor.moveTo(e.sceneX * .9, e.sceneY * .9, e.sceneZ * .9);
+			cursor.moveTo(e.sceneX, e.sceneY, e.sceneZ);
 			cursorMaterial.color = brushColor.hex;
 		}
 		
@@ -231,6 +232,7 @@ package com.bunnybones.away3d.pano.tools
 		{
 			_brushSize = value;
 			cursor.scaleX = cursor.scaleY = cursor.scaleZ = value * layer.scaleX;
+			dtag(_brushSize);
 		}
 		
 		static public function get brushColor():Color3D
@@ -243,9 +245,19 @@ package com.bunnybones.away3d.pano.tools
 			_brushColor = value;
 		}
 		
+		static public function get pressure():Number 
+		{
+			return _pressure;
+		}
+		
+		static public function set pressure(value:Number):void 
+		{
+			_pressure = value;
+		}
+		
 		static public function increaseBrushSize():void
 		{
-			brushSize = Math.min(1, brushSize + BRUSHSIZE_STEP);
+			brushSize = Math.max(1, brushSize + BRUSHSIZE_STEP);
 		}
 		
 		static public function decreaseBrushSize():void

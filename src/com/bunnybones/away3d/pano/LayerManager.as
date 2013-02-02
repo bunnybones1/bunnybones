@@ -12,10 +12,9 @@ package com.bunnybones.away3d.pano
 	 */
 	public class LayerManager 
 	{
-		
 		private var _layers:Vector.<Layer> = new Vector.<Layer>;
 		private var _currentLayer:Layer;
-		private var scene:Scene3D;
+		private var _scene:Scene3D;
 		public function LayerManager(scene:Scene3D) 
 		{
 			this.scene = scene;
@@ -45,20 +44,20 @@ package com.bunnybones.away3d.pano
 			newLayer(source, name, false, false, true);
 		}
 		
-		public function newLayer(source:BitmapData = null, name:String = "new layer", flip:Boolean = true, blink:Boolean = true, drawable:Boolean = false):void
+		public function newLayer(source:BitmapData = null, name:String = "new layer", flip:Boolean = true, blink:Boolean = false, drawable:Boolean = true):void
 		{
 			var layer:Layer = new Layer(source, name, flip, blink, drawable);
 			//if(currentLayer) layer.radius = currentLayer.radius - 1;
-			scene.addChild(layer);
+			_scene.addChild(layer);
 			layers.push(layer);
 			layer.scaleX = layer.scaleY = layer.scaleZ = 1 / layers.length;
 			currentLayer = layer;
-			trace("scale", layer.scaleX);
+			//trace("scale", layer.scaleX);
 		}
 		
 		public function deleteLayer(currentLayer:Layer):void 
 		{
-			scene.removeChild(currentLayer);
+			_scene.removeChild(currentLayer);
 			layers.splice(layers.indexOf(currentLayer), 1);
 			currentLayer = null;
 		}
@@ -81,6 +80,11 @@ package com.bunnybones.away3d.pano
 		public function get layers():Vector.<Layer> 
 		{
 			return _layers;
+		}
+		
+		public function set scene(value:Scene3D):void 
+		{
+			_scene = value;
 		}
 	}
 
