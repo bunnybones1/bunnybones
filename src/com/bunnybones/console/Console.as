@@ -55,6 +55,11 @@ package com.bunnybones.console
 			stage.focus = lines[0];
 		}
 		
+		public function focus():void
+		{
+			stage.focus = lines[0];
+		}
+		
 		private function onResizeStage(e:Event):void 
 		{
 			for each(var line:TextField in lines)
@@ -144,6 +149,7 @@ package com.bunnybones.console
 		public function toggle():void 
 		{
 			visible = !visible;
+			if (visible) focus();
 		}
 		
 		static public function get singleton():Console 
