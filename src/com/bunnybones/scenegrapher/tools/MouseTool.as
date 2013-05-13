@@ -40,7 +40,7 @@ package com.bunnybones.scenegrapher.tools
 		static public function bind(sceneGrapher:SceneGrapherMain):void
 		{
 			MouseTool.sceneGrapher = sceneGrapher;
-			sceneGrapher.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+			//sceneGrapher.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
 		}
 		
 		static private function onMouseWheel(e:MouseEvent):void 
@@ -66,12 +66,12 @@ package com.bunnybones.scenegrapher.tools
 		
 		public function init():void 
 		{
-			trace("init", this);
+			dtrace("init", this);
 		}
 		
 		public function deinit():void 
 		{
-			trace("deinit", this);
+			dtrace("deinit", this);
 		}
 		
 	}

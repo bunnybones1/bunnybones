@@ -14,8 +14,10 @@ package com.bunnybones.ui.keyboard
 		public var shift:Boolean;
 		public var alt:Boolean;
 		public var instantRepeat:Boolean;
-		public function KeyBinding(keyCode:uint, callbackOnDown:Function = null, callbackOnUp:Function = null, ctrl:Boolean = false, shift:Boolean = false, alt:Boolean = false, instantRepeat:Boolean = false)
+		public var label:String;
+		public function KeyBinding(label:String, keyCode:uint, callbackOnDown:Function = null, callbackOnUp:Function = null, ctrl:Boolean = false, shift:Boolean = false, alt:Boolean = false, instantRepeat:Boolean = false)
 		{
+			this.label = label;
 			this.keyCode = keyCode;
 			this.callbackOnDown = callbackOnDown;
 			this.callbackOnUp = callbackOnUp;
@@ -27,7 +29,7 @@ package com.bunnybones.ui.keyboard
 		
 		public function testKeyDown(e:KeyboardEvent):void
 		{
-			testKey(e);
+			testKey(e, true);
 		}
 		
 		public function testKeyUp(e:KeyboardEvent):void
@@ -35,8 +37,9 @@ package com.bunnybones.ui.keyboard
 			testKey(e, false, false);
 		}
 		
-		public function testKey(e:KeyboardEvent, strictOnModifiers:Boolean = true, down:Boolean = true):void
+		private function testKey(e:KeyboardEvent, strictOnModifiers:Boolean = true, down:Boolean = true):void
 		{
+			trace(e.keyLocation);
 			var callback:Function = down ? callbackOnDown : callbackOnUp;
 			if (!callback) return;
 			if (e.keyCode == keyCode)

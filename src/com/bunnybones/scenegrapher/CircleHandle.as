@@ -83,18 +83,20 @@ package com.bunnybones.scenegrapher
 				var tempBodyDef:b2BodyDef = new b2BodyDef();
 				tempBodyDef.position.x = localPos.x * SceneGrapherMain.WORLDSCALE;
 				tempBodyDef.position.y = localPos.y * SceneGrapherMain.WORLDSCALE;
-				mouseBody = body.GetWorld().CreateBody(tempBodyDef);
-				var mouseJointDef:b2WeldJointDef = new b2WeldJointDef();
-				mouseJointDef.Initialize(mouseBody, body, new b2Vec2(localPos.x * SceneGrapherMain.WORLDSCALE, localPos.y * SceneGrapherMain.WORLDSCALE));
-				body.GetWorld().CreateJoint(mouseJointDef);
-				stage.addEventListener(MouseEvent.MOUSE_MOVE, onDrag);
-				stage.addEventListener(MouseEvent.MOUSE_UP, onDragStop);
+				if (body) {
+					mouseBody = body.GetWorld().CreateBody(tempBodyDef);
+					var mouseJointDef:b2WeldJointDef = new b2WeldJointDef();
+					mouseJointDef.Initialize(mouseBody, body, new b2Vec2(localPos.x * SceneGrapherMain.WORLDSCALE, localPos.y * SceneGrapherMain.WORLDSCALE));
+					body.GetWorld().CreateJoint(mouseJointDef);
+					stage.addEventListener(MouseEvent.MOUSE_MOVE, onDrag);
+					stage.addEventListener(MouseEvent.MOUSE_UP, onDragStop);
+				}
 			}
 		}
 		
 		private function onMouseUp(e:MouseEvent):void 
 		{
-			trace("UP");
+			trace("UP");     
 			if (tagOnMouseDown is CircleHandle && tagOnMouseDown != this)
 			{
 				var alreadyConnectedThisWay:Boolean = false;
@@ -167,7 +169,7 @@ package com.bunnybones.scenegrapher
 		{
 			super.onAddedToStage(e);
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			animateIn(1);
+			animateIn(0);
 		}
 		
 		private function onFillColorChange(e:Event):void 
@@ -178,18 +180,15 @@ package com.bunnybones.scenegrapher
 		override protected function onClick(e:MouseEvent):void 
 		{
 			super.onClick(e);
-			for (var joint:b2JointEdge = body.GetJointList(); joint; joint = joint.next)
-			{
-				trace(joint.joint);
-				if (joint.joint.GetUserData() is GlobalSettings.instance.defaultConnectionSecondaryClass && joint.joint.GetBodyB() == body) 
-				{
-					if (Selection.isSelected(this))
-					{
-						Selection.select(joint.joint.GetUserData());
-					}
-					else
-					{
-						Selection.deselect(joint.joint.GetUserData());
+			if(body) {
+				for (var joint:b2JointEdge = body.GetJointList(); joint; joint = joint.next) {
+					trace(joint.joint);
+					if (joint.joint.GetUserData() is GlobalSettings.instance.defaultConnectionSecondaryClass && joint.joint.GetBodyB() == body) {
+						if (Selection.isSelected(this)) {
+							Selection.select(joint.joint.GetUserData());
+						} else {
+							Selection.deselect(joint.joint.GetUserData());
+						}
 					}
 				}
 			}
@@ -216,8 +215,10 @@ package com.bunnybones.scenegrapher
 		
 		protected function onEnterFrame(e:Event):void 
 		{
-			x = body.GetPosition().x / SceneGrapherMain.WORLDSCALE;
-			y = body.GetPosition().y / SceneGrapherMain.WORLDSCALE;
+			if(body) {
+				x = body.GetPosition().x / SceneGrapherMain.WORLDSCALE;
+				y = body.GetPosition().y / SceneGrapherMain.WORLDSCALE;
+			}
 			if (dirty) draw();
 		}
 		
@@ -231,9 +232,11 @@ package com.bunnybones.scenegrapher
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 			removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			_body.GetWorld().DestroyBody(_body);
-			_body.SetUserData(null);
-			_body = null;
+			if(_body) {
+				_body.GetWorld().DestroyBody(_body);
+				_body.SetUserData(null);
+				_body = null;
+			}
 			super.onRemovedFromStage(e);
 		}
 		

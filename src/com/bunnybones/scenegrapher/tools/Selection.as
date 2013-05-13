@@ -27,8 +27,8 @@ package com.bunnybones.scenegrapher.tools
 			if (staticInitd) return;
 			staticInitd = true;
 			trace("Tool: Selection Initd");
-			StageKeyBoard.bindKey(Keyboard.A, selectAll, null, true, false, false);
-			StageKeyBoard.bindKey(Keyboard.A, deselectAll, null, true, true, false);
+			StageKeyBoard.bindKey("select all", Keyboard.A, selectAll, null, true, false, false);
+			StageKeyBoard.bindKey("deselect all", Keyboard.A, deselectAll, null, true, true, false);
 		}
 		
 		static public function select(object:DisplayObject):void

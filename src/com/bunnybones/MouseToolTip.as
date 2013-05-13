@@ -12,7 +12,7 @@ package com.bunnybones
 	 */
 	public class MouseToolTip 
 	{
-		static private var stage:Stage;
+		static private var _stage:Stage;
 		static private var staticInitd:Boolean;
 		static private var tips:Boolean;
 		static private var container:Sprite;
@@ -26,11 +26,6 @@ package com.bunnybones
 		{
 			staticInit();
 			MouseToolTip.stage = stage;
-			stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			container = new Sprite();
-			container.mouseChildren = false;
-			container.mouseEnabled = false;
-			stage.addChild(container);
 		}
 		
 		static private function onMouseMove(e:MouseEvent):void 
@@ -69,7 +64,30 @@ package com.bunnybones
 		static private function staticInit():void 
 		{
 			if (staticInitd) return;
+			
+			container = new Sprite();
+			container.mouseChildren = false;
+			container.mouseEnabled = false;
+			
 			staticInitd = true;
+		}
+		
+		static public function get stage():Stage 
+		{
+			return _stage;
+		}
+		
+		static public function set stage(value:Stage):void 
+		{
+			if (_stage) {
+				_stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+				_stage.removeChild(container);
+			}
+			_stage = value;
+			if(_stage) {
+				_stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+				_stage.addChild(container);
+			}
 		}
 		
 	}

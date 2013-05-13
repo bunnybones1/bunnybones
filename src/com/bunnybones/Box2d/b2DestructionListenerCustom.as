@@ -25,7 +25,7 @@ package com.bunnybones.Box2d
 		{
 			//trace("destroy", joint);
 			var connection:Connection = joint.GetUserData();
-			connection.parent.removeChild(connection);
+			if(connection) connection.parent.removeChild(connection);
 			super.SayGoodbyeJoint(joint);
 		}
 	}

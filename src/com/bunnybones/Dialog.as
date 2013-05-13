@@ -38,8 +38,8 @@ package com.bunnybones
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 			stage.addEventListener(Event.RESIZE, onResize);
 			StageKeyBoard.bind(stage);
-			StageKeyBoard.bindKey(Keyboard.ESCAPE, onKeyDownEscape);
-			StageKeyBoard.bindKey(Keyboard.ENTER, onKeyDownEnter);
+			StageKeyBoard.bindKey("Cancel Dialog", Keyboard.ESCAPE, onKeyDownEscape);
+			StageKeyBoard.bindKey("Complete Dialog", Keyboard.ENTER, onKeyDownEnter);
 			stage.focus = text.textField;
 			onResize(null);
 		}

@@ -3,11 +3,12 @@ package com.bunnybones.away3d.pano
 	import away3d.core.base.Geometry;
 	import away3d.entities.Mesh;
 	import away3d.events.Stage3DEvent;
-	import away3d.library.assets.BitmapDataAsset;
+	import away3d.library.assets.BitmapModelAsset;
 	import away3d.materials.MaterialBase;
 	import com.bunnybones.away3d.pano.tools.Brush;
+	import com.bunnybones.panoPainter.model.PanoramaLayerModel;
 	import com.greensock.TweenLite;
-	import flash.display.BitmapData;
+	import flash.display.BitmapModel;
 	import away3d.Away3D;
 	import away3d.cameras.Camera3D;
 	import away3d.cameras.lenses.PerspectiveLens;
@@ -26,7 +27,7 @@ package com.bunnybones.away3d.pano
 	import away3d.tools.utils.Ray;
 	import com.bunnybones.away3d.pano.Layer;
 	import flash.display.Bitmap;
-	import flash.display.BitmapData;
+	import flash.display.BitmapModel;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -51,11 +52,13 @@ package com.bunnybones.away3d.pano
 		private var blink:Boolean;
 		private var sphereMaterial:TextureMaterial;
 		public var drawable:Boolean;
-		public function Layer(source:BitmapData = null, name:String = "new layer", flip:Boolean = true, blink:Boolean = false, drawable:Boolean = false) 
+		public var model:PanoramaLayerModel;
+		public function Layer(model:PanoramaLayerModel = null, source:BitmapModel = null, name:String = "new layer", flip:Boolean = true, blink:Boolean = false, drawable:Boolean = false) 
 		{
+			this.model = model || new PanoramaLayerModel();
 			this.drawable = drawable;
 			this.blink = blink;
-			var sphereBitmapData:BitmapData;
+			var sphereBitmapModel:BitmapModel;
 			if (source)
 			{
 				var m:Matrix = new Matrix();
@@ -64,14 +67,14 @@ package com.bunnybones.away3d.pano
 					m.scale(-1, 1);
 					m.translate(source.width, 0);
 				}
-				sphereBitmapData = new BitmapData(source.width, source.height, true, 0x0000ffff);
-				sphereBitmapData.draw(source, m);
+				sphereBitmapModel = new BitmapModel(source.width, source.height, true, 0x0000ffff);
+				sphereBitmapModel.draw(source, m);
 			}
 			else
 			{
-				sphereBitmapData = new BitmapData(WIDTH, HEIGHT, true, 0x0000ffff);
+				sphereBitmapModel = new BitmapModel(WIDTH, HEIGHT, true, 0x0000ffff);
 			}
-			texture = new BitmapTexture(sphereBitmapData);
+			texture = new BitmapTexture(sphereBitmapModel);
 			sphereMaterial = new TextureMaterial(texture);
 			//sphereMaterial.bothSides = true;
 			sphereMaterial.alphaBlending = true;
@@ -89,7 +92,7 @@ package com.bunnybones.away3d.pano
 		
 		public function sampleAtUV(uv:Point):uint
 		{
-			var bmd:BitmapData = texture.bitmapData;
+			var bmd:BitmapModel = texture.bitmapModel;
 			return bmd.getPixel32(uv.x * bmd.width, uv.y * bmd.height);
 		}
 		

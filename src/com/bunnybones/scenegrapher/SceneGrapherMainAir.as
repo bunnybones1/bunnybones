@@ -38,9 +38,9 @@ package com.bunnybones.scenegrapher
 			var dskTopFileStream:FileStream = new FileStream();
 			var fileString:String = appDir.nativePath;
 			var dskTopFile:File = File.documentsDirectory;
-			trace(dskTopFile.url);
+			dtrace(dskTopFile.url);
 			dskTopFile = dskTopFile.resolvePath(fileString+"\\quicksave.xml");
-			trace(dskTopFile.url);
+			dtrace(dskTopFile.url);
 			dskTopFileStream.openAsync (dskTopFile, FileMode.WRITE);
 			dskTopFileStream.writeUTFBytes (xml);
 			dskTopFileStream.close ();
@@ -52,7 +52,8 @@ package com.bunnybones.scenegrapher
 			var appDir:File = File.applicationStorageDirectory;
 			var fileString:String = appDir.nativePath;
 			var dskTopFile:File = File.documentsDirectory;
-			dskTopFile = dskTopFile.resolvePath(fileString+"\\quicksave.xml");
+			dskTopFile = dskTopFile.resolvePath(fileString + "\\quicksave.xml");
+			dtrace(dskTopFile.url);
 			var xmlString:URLRequest = new URLRequest(dskTopFile.url); 
 			xmlLoader = new URLLoader(xmlString); 
 			xmlLoader.addEventListener("complete", onXMLLoadComplete);

@@ -21,9 +21,9 @@ package com.bunnybones.scenegrapher.tools
 		{
 			if (staticInitd) return;
 			staticInitd = true;
-			trace("Tool: Destroyer Initd");
-			StageKeyBoard.bindKey(Keyboard.DELETE, destroySelected);
-			StageKeyBoard.bindKey(Keyboard.BACKSPACE, destroySelected);
+			dtrace("Tool: Destroyer Initd");
+			StageKeyBoard.bindKey("delete selected", Keyboard.DELETE, destroySelected);
+			StageKeyBoard.bindKey("delete selected", Keyboard.BACKSPACE, destroySelected);
 		}
 		
 		static public function destroySelected():void 

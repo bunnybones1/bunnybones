@@ -3,8 +3,10 @@ package com.bunnybones.away3d.pano
 	import away3d.containers.Scene3D;
 	import com.bunnybones.away3d.pano.tools.Brush;
 	import com.bunnybones.MouseToolTip;
+	import com.bunnybones.panoPainter.model.PanoramaModel;
+	import com.bunnybones.panoPainter.model.PanoramaLayerModel;
 	import com.bunnybones.ui.keyboard.StageKeyBoard;
-	import flash.display.BitmapData;
+	import flash.display.BitmapModel;
 	import flash.ui.Keyboard;
 	/**
 	 * ...
@@ -12,16 +14,16 @@ package com.bunnybones.away3d.pano
 	 */
 	public class LayerManager 
 	{
+		private var _model:PanoramaModel;
 		private var _layers:Vector.<Layer> = new Vector.<Layer>;
 		private var _currentLayer:Layer;
 		private var _scene:Scene3D;
 		public function LayerManager(scene:Scene3D) 
 		{
 			this.scene = scene;
-			StageKeyBoard.bindKey(Keyboard.N, initNewLayer, null, true);
-			StageKeyBoard.bindKey(Keyboard.M, initNewLayer, null, true);
-			StageKeyBoard.bindKey(Keyboard.PAGE_DOWN, drawOnNextLayer);
-			StageKeyBoard.bindKey(Keyboard.PAGE_UP, drawOnPreviousLayer);
+			StageKeyBoard.bindKey("New Layer", Keyboard.L, newLayer, null, true);
+			StageKeyBoard.bindKey("Next Layer", Keyboard.PAGE_DOWN, drawOnNextLayer);
+			StageKeyBoard.bindKey("Prev Layer", Keyboard.PAGE_UP, drawOnPreviousLayer);
 		}
 		
 		private function drawOnNextLayer():void 
@@ -34,20 +36,12 @@ package com.bunnybones.away3d.pano
 			currentLayer = _layers[(_layers.indexOf(_currentLayer) - 1 + _layers.length) % _layers.length];
 		}
 		
-		private function initNewLayer():void 
+		public function newLayer(model:PanoramaLayerModel = null, source:BitmapModel = null, name:String = "new layer", flip:Boolean = true, blink:Boolean = false, drawable:Boolean = true):void
 		{
-			LayerMaker.visit(this, "newLayerDrawable");
-		}
-		
-		public function newLayerDrawable(source:BitmapData = null, name:String = "new layer"):void
-		{
-			newLayer(source, name, false, false, true);
-		}
-		
-		public function newLayer(source:BitmapData = null, name:String = "new layer", flip:Boolean = true, blink:Boolean = false, drawable:Boolean = true):void
-		{
-			var layer:Layer = new Layer(source, name, flip, blink, drawable);
+			model = model || new PanoramaLayerModel();
+			var layer:Layer = new Layer(model, source, name, flip, blink, drawable);
 			//if(currentLayer) layer.radius = currentLayer.radius - 1;
+			this.model.addLayer(model);
 			_scene.addChild(layer);
 			layers.push(layer);
 			layer.scaleX = layer.scaleY = layer.scaleZ = 1 / layers.length;
@@ -60,6 +54,14 @@ package com.bunnybones.away3d.pano
 			_scene.removeChild(currentLayer);
 			layers.splice(layers.indexOf(currentLayer), 1);
 			currentLayer = null;
+		}
+		
+		public function reset():void 
+		{
+			var totalChildren:int = _scene.numChildren;
+			for (var i:int = totalChildren - 1; i > 0; i--) {
+				_scene.removeChild(_scene.getChildAt(i));
+			}
 		}
 		
 		public function get currentLayer():Layer 
@@ -85,6 +87,16 @@ package com.bunnybones.away3d.pano
 		public function set scene(value:Scene3D):void 
 		{
 			_scene = value;
+		}
+		
+		public function get model():PanoramaModel 
+		{
+			return _model;
+		}
+		
+		public function set model(value:PanoramaModel):void 
+		{
+			_model = value;
 		}
 	}
 

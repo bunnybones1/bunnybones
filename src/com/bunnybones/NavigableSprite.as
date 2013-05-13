@@ -2,7 +2,6 @@ package com.bunnybones
 {
 	import com.bunnybones.ui.keyboard.StageKeyBoard;
 	import com.bunnybones.NavigableSprite;
-	import com.jam3media.fancyengine.display.lights.PointLight;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.display.StageAlign;
@@ -75,8 +74,8 @@ package com.bunnybones
 			//stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			StageKeyBoard.bindKey(Keyboard.EQUAL, zoomInStep, null, true, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.MINUS, zoomOutStep, null, true, false, false, true);
+			StageKeyBoard.bindKey("zoom in", Keyboard.EQUAL, zoomInStep, null, true, false, false, true);
+			StageKeyBoard.bindKey("zoom out", Keyboard.MINUS, zoomOutStep, null, true, false, false, true);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
 			if (useMode3D) 
 			{
@@ -149,6 +148,7 @@ package com.bunnybones
 		
 		private function onMouseWheel(e:MouseEvent):void 
 		{
+			dtag("WTF");
 			if ((e.ctrlKey || e.shiftKey) && useMode3D)
 			{
 			}

@@ -13,10 +13,15 @@ package com.bunnybones.away3d.pano.tools
 	import com.bunnybones.color.Color;
 	import com.bunnybones.away3d.pano.Layer;
 	import com.bunnybones.color.Color3D;
+	import com.bunnybones.ui.keyboard.KeyBinding;
+	import com.bunnybones.ui.keyboard.KeyButton;
+	import com.bunnybones.ui.keyboard.OnScreenKeyboard;
 	import com.bunnybones.ui.keyboard.StageKeyBoard;
 	import flash.display.BitmapData;
 	import flash.display.Shape;
+	import flash.events.Event;
 	import flash.geom.Matrix;
+	import flash.geom.Matrix3D;
 	import flash.geom.Point;
 	import flash.ui.Keyboard;
 	
@@ -41,35 +46,39 @@ package com.bunnybones.away3d.pano.tools
 		
 		static public function bind(scene:Scene3D):void
 		{
-			StageKeyBoard.bindKey(Keyboard.RIGHTBRACKET, increaseBrushSize, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.LEFTBRACKET, decreaseBrushSize, null, false, false, false, true);
+			Color3D.staticInit();
+			StageKeyBoard.bindKey("Increase Brush Size", Keyboard.RIGHTBRACKET, increaseBrushSize);
+			StageKeyBoard.bindKey("Decrease Brush Size", Keyboard.LEFTBRACKET, decreaseBrushSize);
 			
-			StageKeyBoard.bindKey(Keyboard.W, increaseHue, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.Q, decreaseHue, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.S, increaseSaturation, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.A, decreaseSaturation, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.X, increaseValue, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.Z, decreaseValue, null, false, false, false, true);
+			addColorKey("Increase Hue", Keyboard.W, increaseHue, Color3D.getHueMatrix(15));
+			addColorKey("Decrease Hue", Keyboard.Q, decreaseHue, Color3D.getHueMatrix(-15));
+			addColorKey("Increase Saturation", Keyboard.S, increaseSaturation, Color3D.getSaturationMatrix(15));
+			addColorKey("Decrease Saturation", Keyboard.A, decreaseSaturation, Color3D.getSaturationMatrix(-15));
+			addColorKey("Increase Value", Keyboard.X, increaseValue, Color3D.getValueMatrix(15));
+			addColorKey("Decrease Value", Keyboard.Z, decreaseValue, Color3D.getValueMatrix(-15));
 			
-			StageKeyBoard.bindKey(Keyboard.R, increaseRed, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.E, decreaseRed, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.F, increaseGreen, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.D, decreaseGreen, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.V, increaseBlue, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.C, decreaseBlue, null, false, false, false, true);
+			addColorKey("Increase Red", Keyboard.R, increaseRed, Color3D.getRedMatrix(15));
+			addColorKey("Decrease Red", Keyboard.E, decreaseRed, Color3D.getRedMatrix(-15));
+			addColorKey("Increase Green", Keyboard.F, increaseGreen, Color3D.getGreenMatrix(15));
+			addColorKey("Decrease Green", Keyboard.D, decreaseGreen, Color3D.getGreenMatrix(-15));
+			addColorKey("Increase Blue", Keyboard.V, increaseBlue, Color3D.getBlueMatrix(15));
+			addColorKey("Decrease Blue", Keyboard.C, decreaseBlue, Color3D.getBlueMatrix(-15));
 			
-			StageKeyBoard.bindKey(Keyboard.NUMBER_1, function ():void { brushAlpha = .1;}, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.NUMBER_2, function ():void { brushAlpha = .2;}, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.NUMBER_3, function ():void { brushAlpha = .3;}, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.NUMBER_4, function ():void { brushAlpha = .4;}, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.NUMBER_5, function ():void { brushAlpha = .5;}, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.NUMBER_6, function ():void { brushAlpha = .6;}, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.NUMBER_7, function ():void { brushAlpha = .7;}, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.NUMBER_8, function ():void { brushAlpha = .8;}, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.NUMBER_9, function ():void { brushAlpha = .9;}, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.NUMBER_0, function ():void { brushAlpha = 1;}, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.Y, increaseAlpha, null, false, false, false, true);
-			StageKeyBoard.bindKey(Keyboard.T, decreaseAlpha, null, false, false, false, true);
+			addAlphaSetKey("Alpha 10%", Keyboard.NUMBER_1, .1);
+			addAlphaSetKey("Alpha 20%", Keyboard.NUMBER_2, .2);
+			addAlphaSetKey("Alpha 30%", Keyboard.NUMBER_3, .3);
+			addAlphaSetKey("Alpha 40%", Keyboard.NUMBER_4, .4);
+			addAlphaSetKey("Alpha 50%", Keyboard.NUMBER_5, .5);
+			addAlphaSetKey("Alpha 60%", Keyboard.NUMBER_6, .6);
+			addAlphaSetKey("Alpha 70%", Keyboard.NUMBER_7, .7);
+			addAlphaSetKey("Alpha 80%", Keyboard.NUMBER_8, .8);
+			addAlphaSetKey("Alpha 80%", Keyboard.NUMBER_9, .9);
+			addAlphaSetKey("Alpha 100%", Keyboard.NUMBER_0, 1);
+			
+			addAlphaAdjustKey("Increase Alpha", Keyboard.Y, .1);
+			addAlphaAdjustKey("Decrease Alpha", Keyboard.T, -.1);
+			
+			
 			var cursorShape:Shape = new Shape();
 			cursorShape.graphics.beginFill(0xff0000);
 			cursorShape.graphics.drawCircle(0, 0, 32);
@@ -86,6 +95,39 @@ package com.bunnybones.away3d.pano.tools
 			cursor = new Mesh(cursorSphere, cursorMaterial);
 			//cursor.visible = false;
 			scene.addChild(cursor);
+		}
+		
+		static private function addAlphaAdjustKey(label:String, keyCode:uint, amt:Number):void 
+		{
+			var tempFunc:Function = function ():void { brushAlpha += amt; };
+			addAlphaFunctionKey(label, keyCode, tempFunc);
+		}
+		
+		static private function addAlphaSetKey(label:String, keyCode:uint, amt:Number):void 
+		{
+			var tempFunc:Function = function ():void { brushAlpha = amt; };
+			addAlphaFunctionKey(label, keyCode, tempFunc);
+		}
+		
+		static private function addAlphaFunctionKey(label:String, keyCode:uint, funct:Function):void
+		{
+			StageKeyBoard.bindKey(label, keyCode, funct , null, false, false, false, false);
+			if (StageKeyBoard.onScreenKeyboard) {
+				var keyButton:KeyButton = StageKeyBoard.onScreenKeyboard.getKeyButtonByKeyCode(keyCode);
+				keyButton.color = brushColor.giveBirth();
+			}
+		}
+		
+		static private function addColorKey(label:String, keyCode:uint, callbackOnDown:Function, colorMatrix:Matrix3D):void 
+		{
+			var keyBinding:KeyBinding = StageKeyBoard.bindKey(label, keyCode, callbackOnDown, null, false, false, false, true);
+			if (StageKeyBoard.onScreenKeyboard) {
+				var keyButton:KeyButton = StageKeyBoard.onScreenKeyboard.getKeyButtonByKeyCode(keyCode);
+				
+				keyButton.color = brushColor.giveBirth(colorMatrix);
+				//keyButton.attachColorMatrix(this, colorMatrix);
+			}
+			
 		}
 		
 		static public function decreaseRed():void 
@@ -132,32 +174,32 @@ package com.bunnybones.away3d.pano.tools
 		
 		static public function decreaseHue():void 
 		{
-			brushColor.rotateHue(-1);
+			brushColor.rotateHue(-5);
 		}
 		
 		static public function increaseHue():void 
 		{
-			brushColor.rotateHue(1);
+			brushColor.rotateHue(5);
 		}
 		
 		static public function decreaseSaturation():void 
 		{
-			brushColor.saturate(-1);
+			brushColor.saturate(-5);
 		}
 		
 		static public function increaseSaturation():void 
 		{
-			brushColor.saturate(1);
+			brushColor.saturate(5);
 		}
 		
 		static public function decreaseValue():void 
 		{
-			brushColor.brighten(-1);
+			brushColor.brighten(-5);
 		}
 		
 		static public function increaseValue():void 
 		{
-			brushColor.brighten(1);
+			brushColor.brighten(5);
 		}
 		//
 		static public function initBrush(layer:Layer):void
@@ -182,7 +224,6 @@ package com.bunnybones.away3d.pano.tools
 		static private function onMouseMoveCursor(e:MouseEvent3D):void 
 		{
 			cursor.moveTo(e.sceneX, e.sceneY, e.sceneZ);
-			cursorMaterial.color = brushColor.hex;
 		}
 		
 		static private function onMouseDownSphere(e:MouseEvent3D):void 
@@ -242,7 +283,14 @@ package com.bunnybones.away3d.pano.tools
 		
 		static public function set brushColor(value:Color3D):void 
 		{
+			if (_brushColor) _brushColor.removeEventListener(Event.CHANGE, onColorChange);
 			_brushColor = value;
+			if (_brushColor) _brushColor.addEventListener(Event.CHANGE, onColorChange);
+		}
+		
+		static private function onColorChange(e:Event):void 
+		{
+			cursorMaterial.color = _brushColor.hex;
 		}
 		
 		static public function get pressure():Number 

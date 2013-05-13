@@ -52,7 +52,7 @@ package com.bunnybones.scenegrapher
 	public class SceneGrapherMain extends NavigableSprite
 	{
 		static public const WORLDSCALE:Number = .01;
-		private var gravity:b2Vec2 = new b2Vec2(0, 10);
+		private var gravity:b2Vec2 = new b2Vec2(0, 0);
 		
 		public var graph:b2World;
 		private var graphDebug:b2DebugDraw;
@@ -151,6 +151,22 @@ package com.bunnybones.scenegrapher
 			object.SetUserData(handle);
 			handlesByID[handle.id] = handle;
 			return handle;
+		}
+		
+		public function createBody(x:Number, y:Number, radius:Number):b2Body 
+		{
+			var bodyDef:b2BodyDef = new b2BodyDef();
+			bodyDef.position.x = lastMouseMovePositionLocal.x * SceneGrapherMain.WORLDSCALE;
+			bodyDef.position.y = lastMouseMovePositionLocal.y * SceneGrapherMain.WORLDSCALE;
+			var tempBody:b2Body = graph.CreateBody(bodyDef);
+			var fixtureDef:b2FixtureDef = new b2FixtureDef();
+			fixtureDef.friction = .5;
+			fixtureDef.density = 1;
+			fixtureDef.restitution = .5;
+			fixtureDef.shape = new b2CircleShape(0);
+			tempBody.CreateFixture(fixtureDef);
+			tempBody.SetType(b2Body.b2_staticBody);
+			return tempBody;
 		}
 		
 		private function destroyAllHandles():void 

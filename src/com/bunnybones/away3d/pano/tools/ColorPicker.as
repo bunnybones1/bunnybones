@@ -28,7 +28,7 @@ package com.bunnybones.away3d.pano.tools
 		static public function bind(layerManager:LayerManager):void
 		{
 			ColorPicker.layerManager = layerManager;
-			StageKeyBoard.bindKey(Keyboard.ALTERNATE, enableColorPicking, disableColorPicking, false, false, true, true);
+			StageKeyBoard.bindKey("Color Picker", Keyboard.ALTERNATE, enableColorPicking, disableColorPicking, false, false, true, true);
 			dtrace("ColorPicker initd");
 		}
 		

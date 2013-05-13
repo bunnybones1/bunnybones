@@ -4,8 +4,6 @@ package com.bunnybones.panoPainter
 	import away3d.cameras.lenses.PerspectiveLens;
 	import away3d.containers.Scene3D;
 	import away3d.containers.View3D;
-	import away3d.tools.serialize.Serialize;
-	import away3d.tools.serialize.TraceSerializer;
 	import com.bunnybones.away3d.pano.LayerManager;
 	import com.bunnybones.away3d.pano.ParalaxPanoCamera;
 	import com.bunnybones.away3d.pano.tools.Brush;
@@ -14,7 +12,6 @@ package com.bunnybones.panoPainter
 	import com.bunnybones.ui.keyboard.StageKeyBoard;
 	import com.bunnybones.ui.wacom.StageWacom;
 	import com.greensock.TweenLite;
-	import com.bunnybones.ui.wacom.StageWacom;
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -35,6 +32,8 @@ package com.bunnybones.panoPainter
 		private var mouseDelta:Point = new Point();
 		private var cameraSpeed:Number = 3;
 		private var mouseActive:Boolean;
+		private var panoramaData:PanoramaData;
+		private var settings:SettingsData;
 		protected var drawable:Boolean = false;
 		protected var images:Array;
 		protected var imageIndex:int = 0;
@@ -56,6 +55,11 @@ package com.bunnybones.panoPainter
 		
 		private function init():void 
 		{
+			
+			//init UI
+			StageKeyBoard.bind(stage);
+			MouseToolTip.bind(stage);
+			
 			//graphics
 			scene = new Scene3D();
 			var lens:PerspectiveLens = new PerspectiveLens(70);
@@ -67,7 +71,6 @@ package com.bunnybones.panoPainter
 			view.stage3DProxy.configureBackBuffer(stage.stageWidth, stage.stageHeight, 4, true);
 			view.width = stage.stageWidth;
 			view.height = stage.stageHeight;
-			view.x = 100;
 			//camera.z = 0;
 			view.mouse3DManager.forceMouseMove = true;
 			
@@ -88,64 +91,92 @@ package com.bunnybones.panoPainter
 			//t.evaluate
 			//mouseManager = new Mouse3DManager(view);
 			
-			newPano();
 			
-			//UI
-			StageKeyBoard.bind(stage);
-			MouseToolTip.bind(stage);
+			//implement UI like hotkeys
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
 			stage.addEventListener(Event.MOUSE_LEAVE, onMouseLeave);
 			
-			StageKeyBoard.bindKey(Keyboard.N, newPano, null, true);
-			StageKeyBoard.bindKey(Keyboard.S, save, null, true);
-			StageKeyBoard.bindKey(Keyboard.S, saveAs, null, true, true);
 			
-			StageKeyBoard.bindKey(Keyboard.L, layerManager.newLayer, null, true);
+			StageKeyBoard.bindKey("New Pano", Keyboard.N, newPano, null, true);
+			StageKeyBoard.bindKey("Save", Keyboard.S, save, null, true);
+			StageKeyBoard.bindKey("SaveAs", Keyboard.S, saveAs, null, true, true);
+			
+			StageKeyBoard.bindKey("Open", Keyboard.O, loadAs, null, true);
 			
 			StageWacom.instance.bind(stage, this);
 			StageWacom.instance.bindPressureValue(Brush, "pressure");
+			
+			//io
+			NetData.ioClass = DataIOAir;
+			settings = new SettingsData();
+			settings.addEventListener(Event.COMPLETE, onSettingsFileComplete);
+			settings.init("settings.xml");
+			
+			//new panorama
+			newPano();
+		}
+		
+		private function onSettingsFileComplete(e:Event):void 
+		{
+			dtag("!");
 		}
 		
 		private function newPano():void 
 		{
-			scene = new Scene3D();
-			view.scene = scene;
-			layerManager.scene = scene;
-			scene.addChild(camera);
-			//var valid:Boolean = AWDParser.supportsData(data);
-			//pano = new Panorama(new PanoramaData());
+			resetPanorama();
+		}
+		
+		private function resetPanorama():void 
+		{
+			layerManager.reset();
+			panoramaData = layerManager.data = new PanoramaData();
+//			panoramaData.
 		}
 		
 		private function save():void 
 		{
-			Serialize.serializeScene(scene, new TraceSerializer());
-			
+			panoramaData.addEventListener(IOEvent.CANCEL, onPanoramaSaveCancelled);
+			panoramaData.addEventListener(IOEvent.SAVE_COMPLETE, onPanoramaSaveComplete);
+			panoramaData.save();
+		}
+		
+		private function onPanoramaSaveCancelled(e:IOEvent):void 
+		{
+			deinitPanoramaSave();
+		}
+		
+		private function onPanoramaSaveComplete(e:IOEvent):void 
+		{
+			deinitPanoramaSave();
+			settings.lastPanoramaURL = panoramaData.url;
+			settings.save();
+		}
+		
+		private function deinitPanoramaSave():void 
+		{
+			panoramaData.removeEventListener(IOEvent.SAVE_COMPLETE, onPanoramaSaveComplete);
+			panoramaData.removeEventListener(IOEvent.CANCEL, onPanoramaSaveCancelled);
 		}
 		
 		private function saveAs():void 
 		{
 			//file reference stuff
-			save();
+			panoramaData.saveAs();
+		}
+		
+		private function load():void 
+		{
+			panoramaData.load();
+		}
+		
+		private function loadAs():void
+		{
+			panoramaData.loadAs();
 		}
 		
 		private function onMouseLeave(e:Event):void 
 		{
 			mouseActive = false;
-		}
-		
-		private function delayedAdd():void 
-		{
-			trace("adding", imageIndex);
-			var image:Array = images[imageIndex];
-			layerManager.newLayer((new (image[1] as Class)() as Bitmap).bitmapData, image[0], image[0]=="base render", image[0]=="highlights", image[0]!="base render" && drawable);
-			
-			imageIndex++;
-			trace("?", imageIndex, images.length);
-			if (imageIndex < images.length) 
-			{
-				trace("!", imageIndex, images.length);
-				TweenLite.delayedCall(.4, delayedAdd);
-			}
 		}
 		
 		private function onMouseWheel(e:MouseEvent):void 

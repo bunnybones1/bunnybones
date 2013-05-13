@@ -35,14 +35,14 @@ package com.bunnybones.scenegrapher.tools
 		{
 			if (staticInitd) return;
 			staticInitd = true;
-			trace("Tool: ColorPicker Initd");
+			dtrace("Tool: ColorPicker Initd");
 			bindKeys();
 		}
 		
 		static private function bindKeys():void 
 		{
-			StageKeyBoard.bindKey(Keyboard.B, colorLineDialog, null, true);
-			StageKeyBoard.bindKey(Keyboard.B, colorFillDialog, null, true, true);
+			StageKeyBoard.bindKey("color line", Keyboard.B, colorLineDialog, null, true);
+			StageKeyBoard.bindKey("color fill", Keyboard.B, colorFillDialog, null, true, true);
 		}
 		
 		static private function releaseKeys():void 
@@ -122,7 +122,7 @@ class ColorSwatchDialog extends Sprite
 		stage.addEventListener(Event.RESIZE, onResizeStage);
 		//onResizeStage(null);
 		addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-		StageKeyBoard.bindKey(Keyboard.ESCAPE, cancel);
+		StageKeyBoard.bindKey("cancel", Keyboard.ESCAPE, cancel);
 		
 		var hex:HexColorSwatch = new HexColorSwatch(0);
 		hex.addEventListener(MouseEvent.CLICK, onMouseClickSwatch);

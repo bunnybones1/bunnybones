@@ -1,5 +1,6 @@
 package com.bunnybones.panoPainter 
 {
+	import com.bunnybones.panoPainter.model.PanoramaModel;
 	/**
 	 * ...
 	 * @author Tomasz Dysinski
@@ -7,7 +8,7 @@ package com.bunnybones.panoPainter
 	public class Panorama 
 	{
 		
-		public function Panorama(data:PanoramaData) 
+		public function Panorama(model:PanoramaModel) 
 		{
 			
 		}

@@ -32,7 +32,7 @@ package com.bunnybones.scenegrapher.tools
 		{
 			if (e.target is Stage)
 			{
-				if (e.ctrlKey)
+				if (e.ctrlKey || e.shiftKey)
 				{
 					tempCursorHandle = new PolyLineShape();
 					tempCursorHandle.x = sceneGrapher.lastMouseMovePositionLocal.x;

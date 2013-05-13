@@ -37,7 +37,7 @@ package com.bunnybones.scenegrapher.tools
 		{
 			if (e.target is Stage)
 			{
-				if (e.ctrlKey)
+			if (e.ctrlKey || e.shiftKey)
 				{
 					//trace("new handle start");
 					sceneGrapher.stage.addEventListener(MouseEvent.MOUSE_MOVE, onNewHandleDrag);
@@ -68,23 +68,12 @@ package com.bunnybones.scenegrapher.tools
 			//trace("new handle stop");
 			sceneGrapher.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onNewHandleDrag);
 			sceneGrapher.stage.removeEventListener(MouseEvent.MOUSE_UP, onNewHandleStop);
-			var bodyDef:b2BodyDef = new b2BodyDef();
-			bodyDef.position.x = tempCursorHandle.body.GetPosition().x;
-			bodyDef.position.y = tempCursorHandle.body.GetPosition().y;
-			bodyDef.linearDamping = 1;
-			var body:b2Body = sceneGrapher.graph.CreateBody(bodyDef);
-			var fixtureDef:b2FixtureDef = new b2FixtureDef();
-			fixtureDef.friction = .5;
-			fixtureDef.density = 1;
-			fixtureDef.restitution = .5;
-			fixtureDef.shape = new b2CircleShape(tempCursorHandle.radius);
-			Destroyer.destroy(tempCursorHandle);
-			body.CreateFixture(fixtureDef);
-			body.SetType(b2Body.b2_dynamicBody);
+			var body:b2Body = sceneGrapher.createBody(tempCursorHandle.body.GetPosition().x, tempCursorHandle.body.GetPosition().y, tempCursorHandle.radius);
 			var handle:Handle = sceneGrapher.createHandle(body, GlobalSettings.instance.defaultCircleHandleClass);
 			handle.initRename();
 			sceneGrapher.atmosphere.AddBody(body);
 			sceneGrapher.waterline.AddBody(body);
+			Destroyer.destroy(tempCursorHandle);
 		}
 		
 		override public function deinit():void 
