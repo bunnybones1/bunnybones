@@ -2,9 +2,6 @@ package com.bunnybones.ui.keyboard
 {
 	import com.bunnybones.color.Color3D;
 	import com.bunnybones.ui.keyboard.OnScreenKeyboard;
-	import com.jam3media.display.graphics.Color;
-	import com.jam3media.displaybaseclasses.ButtonBase;
-	import com.jam3media.utils.DisplayUtils;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Point;

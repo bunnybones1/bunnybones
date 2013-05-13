@@ -1,5 +1,6 @@
 package com.bunnybones.panoPainter.model
 {
+	import com.bunnybones.model.NetModel;
 	
 	/**
 	 * ...

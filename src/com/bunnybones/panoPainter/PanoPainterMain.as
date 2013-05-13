@@ -8,11 +8,14 @@ package com.bunnybones.panoPainter
 	import com.bunnybones.away3d.pano.ParalaxPanoCamera;
 	import com.bunnybones.away3d.pano.tools.Brush;
 	import com.bunnybones.away3d.pano.tools.ColorPicker;
+	import com.bunnybones.model.io.ModelIOAir;
+	import com.bunnybones.model.io.ModelIOEvent;
+	import com.bunnybones.model.NetModel;
 	import com.bunnybones.MouseToolTip;
+	import com.bunnybones.panoPainter.model.PanoramaModel;
+	import com.bunnybones.panoPainter.model.SettingsModel;
 	import com.bunnybones.ui.keyboard.StageKeyBoard;
 	import com.bunnybones.ui.wacom.StageWacom;
-	import com.greensock.TweenLite;
-	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -32,8 +35,8 @@ package com.bunnybones.panoPainter
 		private var mouseDelta:Point = new Point();
 		private var cameraSpeed:Number = 3;
 		private var mouseActive:Boolean;
-		private var panoramaData:PanoramaData;
-		private var settings:SettingsData;
+		private var panoramaModel:PanoramaModel;
+		private var settings:SettingsModel;
 		protected var drawable:Boolean = false;
 		protected var images:Array;
 		protected var imageIndex:int = 0;
@@ -107,8 +110,8 @@ package com.bunnybones.panoPainter
 			StageWacom.instance.bindPressureValue(Brush, "pressure");
 			
 			//io
-			NetData.ioClass = DataIOAir;
-			settings = new SettingsData();
+			NetModel.ioClass = ModelIOAir;
+			settings = new SettingsModel();
 			settings.addEventListener(Event.COMPLETE, onSettingsFileComplete);
 			settings.init("settings.xml");
 			
@@ -118,7 +121,7 @@ package com.bunnybones.panoPainter
 		
 		private function onSettingsFileComplete(e:Event):void 
 		{
-			dtag("!");
+			dtrace("!");
 		}
 		
 		private function newPano():void 
@@ -129,49 +132,49 @@ package com.bunnybones.panoPainter
 		private function resetPanorama():void 
 		{
 			layerManager.reset();
-			panoramaData = layerManager.data = new PanoramaData();
-//			panoramaData.
+			panoramaModel = layerManager.model = new PanoramaModel();
+//			panoramaModel.
 		}
 		
 		private function save():void 
 		{
-			panoramaData.addEventListener(IOEvent.CANCEL, onPanoramaSaveCancelled);
-			panoramaData.addEventListener(IOEvent.SAVE_COMPLETE, onPanoramaSaveComplete);
-			panoramaData.save();
+			panoramaModel.addEventListener(ModelIOEvent.CANCEL, onPanoramaSaveCancelled);
+			panoramaModel.addEventListener(ModelIOEvent.SAVE_COMPLETE, onPanoramaSaveComplete);
+			panoramaModel.save();
 		}
 		
-		private function onPanoramaSaveCancelled(e:IOEvent):void 
+		private function onPanoramaSaveCancelled(e:ModelIOEvent):void 
 		{
 			deinitPanoramaSave();
 		}
 		
-		private function onPanoramaSaveComplete(e:IOEvent):void 
+		private function onPanoramaSaveComplete(e:ModelIOEvent):void 
 		{
 			deinitPanoramaSave();
-			settings.lastPanoramaURL = panoramaData.url;
+			settings.lastPanoramaURL = panoramaModel.url;
 			settings.save();
 		}
 		
 		private function deinitPanoramaSave():void 
 		{
-			panoramaData.removeEventListener(IOEvent.SAVE_COMPLETE, onPanoramaSaveComplete);
-			panoramaData.removeEventListener(IOEvent.CANCEL, onPanoramaSaveCancelled);
+			panoramaModel.removeEventListener(ModelIOEvent.SAVE_COMPLETE, onPanoramaSaveComplete);
+			panoramaModel.removeEventListener(ModelIOEvent.CANCEL, onPanoramaSaveCancelled);
 		}
 		
 		private function saveAs():void 
 		{
 			//file reference stuff
-			panoramaData.saveAs();
+			panoramaModel.saveAs();
 		}
 		
 		private function load():void 
 		{
-			panoramaData.load();
+			panoramaModel.load();
 		}
 		
 		private function loadAs():void
 		{
-			panoramaData.loadAs();
+			panoramaModel.loadAs();
 		}
 		
 		private function onMouseLeave(e:Event):void 

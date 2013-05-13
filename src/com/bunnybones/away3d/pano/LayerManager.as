@@ -3,10 +3,10 @@ package com.bunnybones.away3d.pano
 	import away3d.containers.Scene3D;
 	import com.bunnybones.away3d.pano.tools.Brush;
 	import com.bunnybones.MouseToolTip;
-	import com.bunnybones.panoPainter.model.PanoramaModel;
 	import com.bunnybones.panoPainter.model.PanoramaLayerModel;
+	import com.bunnybones.panoPainter.model.PanoramaModel;
 	import com.bunnybones.ui.keyboard.StageKeyBoard;
-	import flash.display.BitmapModel;
+	import flash.display.BitmapData;
 	import flash.ui.Keyboard;
 	/**
 	 * ...
@@ -36,7 +36,7 @@ package com.bunnybones.away3d.pano
 			currentLayer = _layers[(_layers.indexOf(_currentLayer) - 1 + _layers.length) % _layers.length];
 		}
 		
-		public function newLayer(model:PanoramaLayerModel = null, source:BitmapModel = null, name:String = "new layer", flip:Boolean = true, blink:Boolean = false, drawable:Boolean = true):void
+		public function newLayer(model:PanoramaLayerModel = null, source:BitmapData = null, name:String = "new layer", flip:Boolean = true, blink:Boolean = false, drawable:Boolean = true):void
 		{
 			model = model || new PanoramaLayerModel();
 			var layer:Layer = new Layer(model, source, name, flip, blink, drawable);

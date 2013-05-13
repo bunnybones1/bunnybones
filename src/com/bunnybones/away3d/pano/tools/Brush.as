@@ -273,7 +273,7 @@ package com.bunnybones.away3d.pano.tools
 		{
 			_brushSize = value;
 			cursor.scaleX = cursor.scaleY = cursor.scaleZ = value * layer.scaleX;
-			dtag(_brushSize);
+			dtrace(_brushSize);
 		}
 		
 		static public function get brushColor():Color3D
