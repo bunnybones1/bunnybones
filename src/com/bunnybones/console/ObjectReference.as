@@ -16,7 +16,24 @@ package com.bunnybones.console
 		
 		public function resolve(from:Object):Object 
 		{
-			return from[name];
+			var i:int;
+			try {
+				var temp:String = name.split("[").join(".").split("]").join("");
+				var stack:Array = temp.split(".");
+				var current:Object = from;
+				for (i = 0; i < stack.length; i++) {
+					var isInt:Boolean = stack[i] == String(int(stack[i]));
+					if(isInt) {
+						current = current[stack[int(i)]];
+					} else {
+						current = current[stack[i]];
+					}
+				}
+				return current;
+			}catch (e:Error) {
+				return e.message;
+			}
+			return "unknown";
 		}
 		
 	}
