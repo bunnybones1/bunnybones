@@ -190,7 +190,8 @@ package com.bunnybones.ui.keyboard
 		{
 			var button:KeyButton = e.target as KeyButton;
 			button.removeEventListener(MouseEvent.ROLL_OUT, onKeyRollOut);
-			button.scaleX = button.scaleY = DEFAULT_SCALE;
+			button.hover = false;
+			//button.scaleX = button.scaleY = DEFAULT_SCALE;
 			
 		}
 		

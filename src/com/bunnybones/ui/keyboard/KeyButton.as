@@ -21,6 +21,7 @@ package com.bunnybones.ui.keyboard
 		private var labelTextField:TextField;
 		private var buttonBase:ButtonBase;
 		private var _color:Color3D;
+		private var drawn:int = 0;
 		public function KeyButton(label:String, keyCode:uint, widthUnits:int = STANDARD_LENGTH, heightUnits:int = STANDARD_LENGTH) {
 			this.heightUnits = heightUnits;
 			this.widthUnits = widthUnits;
@@ -36,20 +37,26 @@ package com.bunnybones.ui.keyboard
 				labelTextField.autoSize = TextFieldAutoSize.LEFT;
 				labelTextField.mouseEnabled = false;
 				labelTextField.text = label;
-				addChild(labelTextField);
 				labelTextField.addEventListener(Event.ADDED_TO_STAGE, onTextAddedToStage);
+				addChild(labelTextField);
 			}
 			
+			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			buttonMode = true;
 			this.focusRect = false;
-			//DisplayUtils.recenterPivot(this);
 			//scaleX = .5;
 			//scaleY = .5;
 		}
 		
+		private function onAddedToStage(e:Event):void 
+		{
+			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			DisplayUtils.centerPivot(this);
+		}
+		
 		private function onTextAddedToStage(e:Event):void 
 		{
-			removeEventListener(Event.ADDED_TO_STAGE, onTextAddedToStage);
+			labelTextField.removeEventListener(Event.ADDED_TO_STAGE, onTextAddedToStage);
 			DisplayUtils.centerText(labelTextField, buttonBase.getBounds(this));
 		}
 		
