@@ -120,7 +120,7 @@ package com.bunnybones.ui.keyboard
 		
 		static public function listKeys(keyCode:uint):String
 		{
-			var string:String = String(keyCode);
+			var string:String = "";
 			var keyCodeBindings:Array = keyBindings[keyCode];
 			for (var i:int = 0; i < keyCodeBindings.length; i++ ) {
 				var binding:KeyBinding = keyCodeBindings[i];
