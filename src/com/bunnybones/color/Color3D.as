@@ -27,7 +27,6 @@ package com.bunnybones.color
 		static private var blueMatrixInv:Matrix3D;
 		
 		private var colorVector:Vector3D;
-		private var _a:int;
 		private var colorCache:Color;
 		private var safe:Boolean;
 		private var _parent:Color3D;
@@ -337,19 +336,20 @@ package com.bunnybones.color
 		
 		public function set a(value:int):void 
 		{
-			if(safe) value = Math.max(Math.min(value, 255), 0);
-			else _a = value;
+			if(safe) colorCache.a = Math.max(Math.min(value, 255), 0);
+			else colorCache.a = value;
 			dispatchEvent(new Event(Event.CHANGE));
 		}
 		
-		public function get alpha():int 
+		public function get alpha():Number 
 		{
 			return colorCache.alpha;
 		}
 		
-		public function set alpha(value:int):void 
+		public function set alpha(value:Number):void 
 		{
 			colorCache.alpha = value;
+			dispatchEvent(new Event(Event.CHANGE));
 		}
 		
 		public function get parent():Color3D 

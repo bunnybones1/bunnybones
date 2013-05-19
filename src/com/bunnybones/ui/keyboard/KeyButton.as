@@ -1,6 +1,7 @@
 package com.bunnybones.ui.keyboard
 {
 	import com.bunnybones.color.Color3D;
+	import com.bunnybones.display.DisplayUtils;
 	import com.bunnybones.ui.keyboard.OnScreenKeyboard;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -28,8 +29,6 @@ package com.bunnybones.ui.keyboard
 			addChild(buttonBase = new ButtonBase(widthUnits, heightUnits, color));
 
 			if (label && label.length > 0) {
-				
-				
 				labelTextField = new TextField();
 				var format:TextFormat = new TextFormat("Arial", OnScreenKeyboard.FONT_SIZE_IN_UNITS * OnScreenKeyboard.PIXELS_PER_UNIT, OnScreenKeyboard.BUTTONS_COLOR1);
 				labelTextField.defaultTextFormat = format;
@@ -38,30 +37,20 @@ package com.bunnybones.ui.keyboard
 				labelTextField.mouseEnabled = false;
 				labelTextField.text = label;
 				addChild(labelTextField);
-				var tightBounds:Rectangle = labelTextField.getCharBoundaries(0);
-				for (var i:int = 1; i < label.length; i++) {
-					tightBounds = tightBounds.union(labelTextField.getCharBoundaries(i));
-				}
-				
-				//getCharBoundaries isn't giving me the expected results
-				//hotfix: correcting odd sizing manually
-				var scale:Number = 20;
-				tightBounds.x *= scale;
-				tightBounds.y *= scale;
-				tightBounds.width *= scale;
-				tightBounds.height *= scale;
-				
-				//center text
-				var center:Point = new Point(tightBounds.x + tightBounds.width * .5, tightBounds.y + tightBounds.height * .5);
-				labelTextField.x = widthUnits * .5 * OnScreenKeyboard.PIXELS_PER_UNIT - center.x;
-				labelTextField.y = heightUnits * .5 * OnScreenKeyboard.PIXELS_PER_UNIT - center.y;
+				labelTextField.addEventListener(Event.ADDED_TO_STAGE, onTextAddedToStage);
 			}
 			
 			buttonMode = true;
 			this.focusRect = false;
-			//DisplayUtils.centerTextrecenterPivot(this);
+			//DisplayUtils.recenterPivot(this);
 			//scaleX = .5;
 			//scaleY = .5;
+		}
+		
+		private function onTextAddedToStage(e:Event):void 
+		{
+			removeEventListener(Event.ADDED_TO_STAGE, onTextAddedToStage);
+			DisplayUtils.centerText(labelTextField, buttonBase.getBounds(this));
 		}
 		
 		public function get keyCode():uint 

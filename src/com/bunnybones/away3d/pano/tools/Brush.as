@@ -36,7 +36,6 @@ package com.bunnybones.away3d.pano.tools
 		static private var _pressure:Number = 1;
 		static public var active:Boolean = true;
 		static private var _brushColor:Color3D = new Color3D(0x456789);
-		static private var brushAlpha:Number = .1;
 		static private var cursorMaterial:ColorMaterial;
 		
 		public function Brush() 
@@ -95,17 +94,18 @@ package com.bunnybones.away3d.pano.tools
 			cursor = new Mesh(cursorSphere, cursorMaterial);
 			//cursor.visible = false;
 			scene.addChild(cursor);
+			_brushColor.rotateHue();
 		}
 		
 		static private function addAlphaAdjustKey(label:String, keyCode:uint, amt:Number):void 
 		{
-			var tempFunc:Function = function ():void { brushAlpha += amt; };
+			var tempFunc:Function = function ():void { brushColor.alpha += amt; };
 			addAlphaFunctionKey(label, keyCode, tempFunc);
 		}
 		
 		static private function addAlphaSetKey(label:String, keyCode:uint, amt:Number):void 
 		{
-			var tempFunc:Function = function ():void { brushAlpha = amt; };
+			var tempFunc:Function = function ():void { brushColor.alpha = amt; };
 			addAlphaFunctionKey(label, keyCode, tempFunc);
 		}
 		
@@ -162,12 +162,12 @@ package com.bunnybones.away3d.pano.tools
 		
 		static public function decreaseAlpha():void 
 		{
-			brushAlpha = Math.max(0, brushAlpha - .02);
+			brushColor.a = Math.max(0, brushColor.a - .02);
 		}
 		
 		static public function increaseAlpha():void 
 		{
-			brushAlpha = Math.min(1, brushAlpha + .02);
+			brushColor.a = Math.min(1, brushColor.a + .02);
 		}
 		
 		//HSV
@@ -243,7 +243,7 @@ package com.bunnybones.away3d.pano.tools
 		{
 			if (!active) return;
 			var brushStroke:Shape = new Shape();
-			brushStroke.graphics.lineStyle(pressure * brushSize * BRUSHSIZE_PIXEL_SCALE, brushColor.hex, brushAlpha);
+			brushStroke.graphics.lineStyle(pressure * brushSize * BRUSHSIZE_PIXEL_SCALE, brushColor.hex, brushColor.a);
 			var deltaU:Number = lastUV.x - e.uv.x;
 			//trace(deltaU);
 			var direction:Number = deltaU > 0 ? 1 : -1;
